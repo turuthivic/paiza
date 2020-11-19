@@ -1,4 +1,4 @@
-<!-- <div class="container" >
+<div class="container" >
   <h1>All Clients</h1>
   <table class="table table-striped">
     <thead class="thead-dark">
@@ -11,24 +11,23 @@
       </tr>
     </thead>
     <tbody>
-      <%# count = 1 %>
-      <%# @clients.each do |client| %>
-        <%#= cache client do %>
+      <% count = 1 %>
+      <% @clients.each do |client| %>
+        <%= cache client do %>
           <tr>
-            <%# unless count > @clients.count %>
-                <th scope="row"><%#= count %></th>
-                <td><%#= client['firstName'] %></td>
-                <td><%#= client['lastName'] %></td>
-                <td><%#= client['birthDate'] %></td>
-                <td><%#= client['gender'] %></td>
-                <td><%#= client['addresses'] %></td>
-              <%# count +=1 %>
-            <%# end %>
+            <% unless count > @clients.count %>
+                <th scope="row"><%= count %></th>
+                <td><%= client['firstName'] %></td>
+                <td><%= client['lastName'] %></td>
+                <td><%= client['birthDate'] %></td>
+                <td><%= client['gender'] %></td>
+                <td><%= client['addresses'] %></td>
+              <% count +=1 %>
+            <% end %>
           </tr>
-        <%# end %>
-      <%# end %>
+        <% end %>
+      <% end %>
     </tbody>
   </table>  
-</div> -->
+</div>
 
-<p><%= request.fullpath %><p>

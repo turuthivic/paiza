@@ -10,6 +10,7 @@ module ClientHelper
       arr << array[count].split(":")
       count +=1
     end
+    # arr
     arr.to_h
   end
 end

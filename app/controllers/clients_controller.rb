@@ -1,18 +1,16 @@
 # /lib/mambu_api
 require 'mambu_api' 
 class ClientsController < ApplicationController
-  before_action :authorize_client, except: :landing_page
-  @@base_uri = 'https://finplus.sandbox.mambu.com/api/'
-#   @@users_uri = 'https://finplus.sandbox.mambu.com/api/users'
-  
+  $base_uri = 'https://finplus.sandbox.mambu.com/api/'
+
   def landing_page
-    # authorize_request
-    # @user_key = helpers.get_details[:user_key]
-    @user_key = helpers.get_details
+    authorize_request
   end
+  
+  def permission_denied; end
 
   def index
-    @clients = find_clients(@@base_uri)
+    @clients = find_clients
   end
 
   def new
@@ -20,46 +18,45 @@ class ClientsController < ApplicationController
   end
   
   def create
-    @client = find_clients(@@base_uri+"clients")
+    @client = find_clients($base_uri+"clients")
   end
   
   def show
-    # @client = find_clients(@@base_uri).first
+    # @client = find_clients($base_uri).first
   end
 
 private
 
-  def find_clients(base_uri)
+  def find_clients
     api = MambuApi.new
-    api.request_api(@@base_uri+"clients")
+    api.request_api($base_uri+"clients")
   end
   
   def authorize_request
-    redirect_to clients_path if valid_url?
+    valid_tenant_domain_and_user? ? (redirect_to clients_path) : (redirect_to permission_denied_path)
   end
   
-  def valid_url?
-    # extract the signed url
-    # !!(request.url).match(/https:\/\/finplus.sandbox.mambu.com/)
-    tenant = helpers.get_details[:tenant]
-    true if tenant == "finplus"
+  def valid_tenant_domain_and_user?
+    tenant = helpers.get_details["\"TENANT_ID\""].gsub /[{"}]/, ""
+    domain = helpers.get_details["{\"DOMAIN\""].gsub /[{"}]/, ""
+    true if tenant == "finplus" && domain == "finplus.sandbox.mambu.com" && authorize_client?
   end
   
   def names
     ["turuthi"]
   end
 
-  def authorize_client
-    client = request_client_encoded_key
+  def authorize_client?
+    client = fetch_user
     username = client["username"]
-    render landing_page unless names.include? username
+    true if names.include? username
   end
   
-  def request_client_encoded_key
+  def fetch_user
      # get_details from client helper
-     user_key = helpers.get_details[:user_key].to_s
+     user_key = helpers.get_details["\"USER_KEY\""].gsub /[{"}]/, ""
      api = MambuApi.new
-     response = api.request_api(@@base_uri+"users/"+user_key)
+     response = api.request_api($base_uri+"users/"+user_key)
   end
 end
 

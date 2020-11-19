@@ -1,7 +1,7 @@
 require 'httparty'
 
 class MambuApi
-  @@base_uri = 'https://finplus.sandbox.mambu.com/api/clients'
+#   $base_uri = 'https://finplus.sandbox.mambu.com/api/'
   
   def auth
     {username: Rails.application.credentials.mambu[:username], 
@@ -10,7 +10,7 @@ class MambuApi
 
   def request_api(base_uri)
     response = HTTParty.get(
-      @@base_uri,
+      base_uri,
       basic_auth: auth)
 
     return nil if response.code != 200
