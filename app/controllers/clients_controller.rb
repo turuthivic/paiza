@@ -4,7 +4,8 @@ class ClientsController < ApplicationController
   $base_uri = 'https://finplus.sandbox.mambu.com/api/'
 
   def landing_page
-    authorize_request
+    # authorize_request
+    @link = request.url
   end
   
   def permission_denied; end
